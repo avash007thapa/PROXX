@@ -18,7 +18,7 @@
 // Sprite structure
 typedef struct {
     int x, y; // Position
-    unsigned int color; // Color
+    unsigned int *color; // Color
 } Sprite;
 
 /* ---------------------------------------------------------------------------- *

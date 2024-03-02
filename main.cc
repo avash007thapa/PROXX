@@ -2,13 +2,14 @@
 
 #include "sprite_dev.h"
 #include "xil_cache.h"
-//#include "xuartps.h"
+#include "xuartps.h"
 
 // Parameter definitions
-#define INTC_DEVICE_ID 		XPAR_PS7_SCUGIC_0_DEVICE_ID
-#define BTNS_DEVICE_ID		XPAR_AXI_GPIO_DEVICE_ID
-#define INTC_GPIO_INTERRUPT_ID XPAR_FABRIC_AXI_GPIO_IP2INTC_IRPT_INTR
-#define BTN_INT 			XGPIO_IR_CH1_MASK
+#define INTC_DEVICE_ID 			XPAR_PS7_SCUGIC_0_DEVICE_ID
+#define BTNS_DEVICE_ID			XPAR_AXI_GPIO_DEVICE_ID
+#define INTC_GPIO_INTERRUPT_ID 	XPAR_FABRIC_AXI_GPIO_IP2INTC_IRPT_INTR
+#define BTN_INT 				XGPIO_IR_CH1_MASK
+#define UART_BASEADDR 			XPAR_PS7_UART_1_BASEADDR
 
 //----------------------------------------------------
 // PROTOTYPE FUNCTIONS
@@ -52,6 +53,48 @@ void BTN_Intr_Handler(void *InstancePtr)
     XGpio_InterruptEnable(&BTNInst, BTN_INT);
 }
 
+void uart_input(int* image_buffer_pointer) {
+	//	 FOR UART DEVELOPMENT-- from adventures_with_ip.c
+	u8 inp = 0x00;
+	u32 CntrlRegister;
+	CntrlRegister = XUartPs_ReadReg(UART_BASEADDR, XUARTPS_CR_OFFSET);
+	XUartPs_WriteReg(UART_BASEADDR, XUARTPS_CR_OFFSET,
+			((CntrlRegister & ~XUARTPS_CR_EN_DIS_MASK) | XUARTPS_CR_TX_EN | XUARTPS_CR_RX_EN));
+	xil_printf("\r\n\r\n");
+	xil_printf("Embedded Sprite development Demo\r\n");
+	xil_printf(
+			"Enter 'c' to generate pure block sprites AND '1' to generate 1 blocks\r\n");
+	xil_printf("----------------------------------------\r\n");
+	while (!XUartPs_IsReceiveData(UART_BASEADDR))
+		;
+
+	inp = XUartPs_ReadReg(UART_BASEADDR, XUARTPS_FIFO_OFFSET);
+	// Select function based on UART input
+	switch (inp) {
+	case '1':
+		xil_printf("GENERATING ONE BLOCKS\r\n");
+		xil_printf("Press 'q' to go back\r\n");
+		// Create 1 digits square box
+		generate_one_blocks_ez(image_buffer_pointer);
+		xil_printf("printing 1\r\n");
+		break;
+	case '2':
+		xil_printf("GENERATING CLEAR BLOCKS\r\n");
+		xil_printf("Press 'q' to go back\r\n");
+		// Create white square box
+		generate_clear_blocks_ez(image_buffer_pointer);
+		xil_printf("Printing 2\r\n");
+		break;
+	default:
+		xil_printf("Printing background\r\n");
+		DrawBackground(image_buffer_pointer);
+		xil_printf("Going to main\r\n");
+		uart_input(image_buffer_pointer);
+		xil_printf("Already in main!\r\n");
+		break;
+	} // switch
+}
+
 int main()
 {
 	int status;
@@ -76,16 +119,9 @@ int main()
 	// Set background to vertical colored lines
 	DrawBackground(image_buffer_pointer);
 
-//	// Create white square box
-//	generate_clear_blocks_ez(image_buffer_pointer);
+//	 FOR UART DEVELOPMENT-- from adventures_with_ip.c
 
-	// Create 1 digits square box
-	generate_one_blocks_ez(image_buffer_pointer);
-
-	// Main loop
-	while(1) {
-
-	}
+	uart_input(image_buffer_pointer);
 	return 0;
 }
 
@@ -104,20 +140,6 @@ void DrawBackground(int* image_buffer_pointer) {
 			}
 		}
 	}
-
-//	for (int bar = 0; bar < 5; ++bar) {
-//					// Calculate the start and end positions of the current bar
-//					int startY = bar * HEIGHT / 5; // Change: startY instead of startX
-//					int endY = (bar + 1) * HEIGHT / 5; // Change: endY instead of endX
-//
-//					// Loop over the pixels in the current bar
-//					for (int y = startY; y < endY; ++y) { // Change: Iterate over y first
-//						for (int x = 0; x < WIDTH; ++x) { // Iterate over x
-//							// Set color based on the position of each bar
-//							*((int *)(image_buffer_pointer + y * WIDTH + x)) = COLOR_ARRAY[bar]; // Change: Set color based on y position
-//						}
-//					}
-//				}
 }
 
 //----------------------------------------------------
@@ -173,47 +195,3 @@ int IntcInitFunction(u16 DeviceId, XGpio *GpioInstancePtr)
 }
 
 
-// FOR UART DEVELOPMENT-- from adventures_with_ip.c
-
-//u8 inp = 0x00;
-//	u32 CntrlRegister;
-//
-//	/* Turn off all LEDs */
-//	Xil_Out32(LED_BASE, 0);
-//
-//	CntrlRegister = XUartPs_ReadReg(UART_BASEADDR, XUARTPS_CR_OFFSET);
-//
-//	XUartPs_WriteReg(UART_BASEADDR, XUARTPS_CR_OFFSET,
-//				  ((CntrlRegister & ~XUARTPS_CR_EN_DIS_MASK) |
-//				   XUARTPS_CR_TX_EN | XUARTPS_CR_RX_EN));
-//
-//	xil_printf("\r\n\r\n");
-//	xil_printf("Embedded LMS Filtering Demo\r\n");
-//	xil_printf("Enter 's' to stream pure audio, 'n' to add tonal noise and 'f' to adaptively filter\r\n");
-//	xil_printf("----------------------------------------\r\n");
-//
-//	// Wait for input from UART via the terminal
-//	while (!XUartPs_IsReceiveData(UART_BASEADDR));
-//				inp = XUartPs_ReadReg(UART_BASEADDR, XUARTPS_FIFO_OFFSET);
-//	// Select function based on UART input
-//	switch(inp){
-//	case 's':
-//		xil_printf("STREAMING AUDIO\r\n");
-//		xil_printf("Press 'q' to return to the main menu\r\n");
-//		audio_stream();
-//		break;
-//	case 'n':
-//		xil_printf("ENTERING NOISE GENERATION OPERATION\r\n");
-//		xil_printf("Select step size via the DIP switches...\r\n\n");
-//		xil_printf("Press 'q' to return to the main menu\r\n");
-//		tonal_noise();
-//		break;
-//	case 'f':
-//		xil_printf("ENTERING LMS FILTERING OPERATION\r\n");
-//		xil_printf("Press 'q' to return to the main menu\r\n");
-//		lms_filter();
-//		break;
-//	default:
-//		menu();
-//		break;
-//	} // switch
