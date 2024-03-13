@@ -26,7 +26,12 @@ int main()
 	// Initialize buffer that writes to VGA
 	int *image_buffer_pointer = (int *)0x00900000;
 
-	uart_input(image_buffer_pointer);
+	xil_printf("PRINTING BACKGROUND\r\n");
+		// Set background to main menu
+		DrawBackground(image_buffer_pointer);
+	xil_printf("DONE PRINTING BACKGROUND\r\n");
+
+//	uart_input(image_buffer_pointer);
 	return 0;
 }
 
@@ -43,9 +48,6 @@ void uart_input(int* image_buffer_pointer) {
 	xil_printf("Enter the number to generate\r");
 	xil_printf("OR type 'm' for mines\r\n");
 	xil_printf("----------------------------------------\r\n");
-
-	// Currently sets background to vertical colored lines
-	DrawBackground(image_buffer_pointer);
 
 	while (!XUartPs_IsReceiveData(UART_BASEADDR));
 
@@ -86,21 +88,12 @@ void DrawSprite(int *image_buffer_pointer, Sprite sprite) {
     }
 }
 
-int bar_div = 5;
+
 void DrawBackground(int* image_buffer_pointer) {
-	for (int bar = 0; bar < bar_div; ++bar) {
-		// Calculate the start and end positions of the current bar
-		int startX = bar * WIDTH / bar_div;
-		int endX = (bar + 1) * WIDTH / bar_div;
-		// Loop over the pixels in the current bar
-		for (int y = 0; y < HEIGHT; ++y) {
-			for (int x = startX; x < endX; ++x) {
-				// Set color based on the position of each bar
-				*((int*) ((image_buffer_pointer + y * WIDTH + x))) =
-						COLOR_ARRAY[bar];
-			}
-		}
-	}
+	int *image1_pointer = (int *)0x020BB00C;
+	int NUM_BYTES_BUFFER = 5542880;
+	memcpy(image_buffer_pointer, image1_pointer, NUM_BYTES_BUFFER);
+	xil_printf("END OF FUNCTION\r\n");
 }
 
 //Create ONE digit blocks on easy difficulty
