@@ -27,8 +27,11 @@
  * ---------------------------------------------------------------------------- */
 // Sprite structure
 typedef struct {
-    int x, y; // Position
-    unsigned int *color; // Color
+//    int x, y; // Position
+    int index; // Calculate position according to numbered blocks
+    unsigned int *color;
+    bool mine; // Is this block a mine or not?
+
 } Sprite;
 
 /* ---------------------------------------------------------------------------- *
@@ -36,10 +39,12 @@ typedef struct {
  * ---------------------------------------------------------------------------- */
 void uart_input(int* image_buffer_pointer);
 void DrawSprite(int *image_buffer_pointer, Sprite sprite);
-void DrawBackground(int *image_buffer_pointer);
+void DrawMenu(int *image_buffer_pointer);
+void DrawInstrPage(int* image_buffer_pointer);
 void generate_two_blocks_ez(int *image_buffer_pointer);
 void generate_one_blocks_ez(int *image_buffer_pointer);
 void generate_mine_blocks_ez(int *image_buffer_pointer);
+void assign_mine_blocks_ez(int *image_buffer_pointer, int index);
 
 /* ---------------------------------------------------------------------------- *
  * 							Screen Information									*
