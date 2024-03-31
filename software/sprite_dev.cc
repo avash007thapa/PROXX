@@ -1,4 +1,5 @@
 #include "sprite_dev.h"
+#include "color_codes.h"
 
 const int SQUARE_SIDE = 32;
 const int diff_EZ = 8; // 8 by 8 blocks
@@ -31,10 +32,12 @@ int main()
 		DrawMenu(image_buffer_pointer);
 	xil_printf("DONE PRINTING BACKGROUND\r\n");
 
+//	audio_play(track, track_size);
 	uart_input(image_buffer_pointer);
+
+
 	return 0;
 }
-
 
 void uart_input(int* image_buffer_pointer) {
 	//	 FOR UART DEVELOPMENT-- from adventures_with_ip.c
@@ -68,7 +71,7 @@ void uart_input(int* image_buffer_pointer) {
 	case 'm':
 			xil_printf("GENERATING MINE BLOCKS\r\n");
 			// Create MINE square box
-			assign_mine_blocks_ez(image_buffer_pointer, 8);
+			assign_mine_blocks_ez(image_buffer_pointer);
 			break;
 	case 'i':
 			xil_printf("OPENING INSTUCTIONS PAGE\r\n");
@@ -167,50 +170,26 @@ void generate_one_blocks_ez(int *image_buffer_pointer) {
 //	}
 //}
 //
-//Create MINE blocks on easy difficulty
-void generate_mine_blocks_ez(int *image_buffer_pointer) {
-	int index = 0;
-
-		for (int j = 0; j < diff_EZ; ++j) {
-			for (int i = 1; i <= diff_EZ; ++i) {
-				Sprite sprite = { index++,
-									&mineBlock[0],
-									TRUE};
-
-				DrawSprite(image_buffer_pointer, sprite);
-			}
-		}
-
-	while (!XUartPs_IsReceiveData(UART_BASEADDR));
-	xil_printf("Type 'q' to go back to background\r\n");
-	if(XUartPs_ReadReg(UART_BASEADDR, XUARTPS_FIFO_OFFSET) == 'q'){
-		uart_input(image_buffer_pointer);
-	} else {
-		generate_mine_blocks_ez(image_buffer_pointer);
-	}
-}
 
 
 //Create MINE blocks on easy difficulty
-void assign_mine_blocks_ez(int *image_buffer_pointer, int index) {
+void assign_mine_blocks_ez(int *image_buffer_pointer) {
+	int temp_index = 0;
 
+	temp_index = (generateRandom()) / 4;
 
-	Sprite sprite = { index++,
+	Sprite sprite = { temp_index,
 						&mineBlock[0],
 						TRUE};
 
 	DrawSprite(image_buffer_pointer, sprite);
 
-
-
 	while (!XUartPs_IsReceiveData(UART_BASEADDR));
-	xil_printf("Type 'q' to go back to background\r\n");
-	if(XUartPs_ReadReg(UART_BASEADDR, XUARTPS_FIFO_OFFSET) == 'q'){
+	if(XUartPs_ReadReg(UART_BASEADDR, XUARTPS_FIFO_OFFSET)){
 		uart_input(image_buffer_pointer);
+	} else {
+		assign_mine_blocks_ez(image_buffer_pointer);
 	}
-//	else {
-//		assign_mine_blocks_ez(image_buffer_pointer, index);
-//	}
 }
 /* for 8 by 8 configuration- EASY
  * 				8			+	(32*8)+(5*(8-1)) = 256+35 =  291	+			8
