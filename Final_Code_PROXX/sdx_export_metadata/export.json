@@ -1,0 +1,37 @@
+{
+  "version": "2020.2",
+  "applications": [],
+  "platforms": [
+    {
+      "name": "complete_design_wrapper"
+    }
+  ],
+  "systems": [
+    {
+      "name": "audio_loop_system",
+      "platform": "C:/Users/athapa/Desktop/m4-audio/complete_design_wrapper/export/complete_design_wrapper/complete_design_wrapper.xpfm",
+      "sysConfig": "complete_design_wrapper",
+      "buildConfig": "Debug",
+      "applications": [
+        {
+          "name": "audio_loop",
+          "platform": "C:/Users/athapa/Desktop/m4-audio/complete_design_wrapper/export/complete_design_wrapper/complete_design_wrapper.xpfm",
+          "platformPath": "D:\\proxx\\complete_design_wrapper\\export\\complete_design_wrapper",
+          "sysConfig": "complete_design_wrapper",
+          "domain": "standalone_ps7_cortexa9_0",
+          "system": "audio_loop_system"
+        },
+        {
+          "name": "hello-2nd-core",
+          "platform": "C:/Users/athapa/Desktop/m4-audio/complete_design_wrapper/export/complete_design_wrapper/complete_design_wrapper.xpfm",
+          "platformPath": "D:\\proxx\\complete_design_wrapper\\export\\complete_design_wrapper",
+          "sysConfig": "complete_design_wrapper",
+          "domain": "dual_arm_core",
+          "system": "audio_loop_system"
+        }
+      ],
+      "platformPath": "D:\\proxx\\complete_design_wrapper\\export\\complete_design_wrapper"
+    }
+  ],
+  "others": []
+}
