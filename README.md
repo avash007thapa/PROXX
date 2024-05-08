@@ -4,8 +4,8 @@ This organized structure enables comprehensive development, from VHDL modeling t
 
 The structure goes as follows:
 Vitis
-  0th core
-    Src
+- 0th core
+```- Src```
       Color_codes.h
       Game_design.c
       Game_design.h
