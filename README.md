@@ -1,3 +1,5 @@
+https://youtu.be/Dq4Tk2fvqVE?si=iWtYvgM-naKz5z8l
+
 The design directory comprises design sources containing "design_1_wrapper" as the top-level entity, zedboard_master.xdc for constraints, and design_1.vhd representing the main VHDL module. 
 Additionally, the design_1.bd directory potentially holds block design files, while simulation sources encompass "design_1_wrapper" for simulation setup. 
 This organized structure enables comprehensive development, from VHDL modeling to constraint definition and simulation, facilitating efficient design verification and implementation on the ZedBoard FPGA platform.
