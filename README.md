@@ -3,38 +3,39 @@ Additionally, the design_1.bd directory potentially holds block design files, wh
 This organized structure enables comprehensive development, from VHDL modeling to constraint definition and simulation, facilitating efficient design verification and implementation on the ZedBoard FPGA platform.
 
 The structure goes as follows:
+```
 Vitis
-- 0th core
-```- Src```
-      Color_codes.h
-      Game_design.c
-      Game_design.h
-      Sprite_dev.cc
-      Sprite_dev.h
-      Usb.c
-      Usb.h
-      Usb_example.c
-      Usb_example.h
-      lscript.ld
-  1st core
-    src
-      Bin
-        Coin.bin
-        test.bin
-    Blob.s
-    main.cc
-    lscript.ld
+      0th core
+            Src
+                  Color_codes.h
+                  Game_design.c
+                  Game_design.h
+                  Sprite_dev.cc
+                  Sprite_dev.h
+                  Usb.c
+                  Usb.h
+                  Usb_example.c
+                  Usb_example.h
+                  lscript.ld
+      1st core
+            src
+                  Bin
+                        Coin.bin
+                        test.bin
+                  Blob.s
+                  main.cc
+                  lscript.ld
 
 Vivado
-  Ip_repo
-    Random_number_generator
-    Zed_audio_ctrl
-    Vga_controller_ip
-  Last_hardware_update
+      Ip_repo
+            Random_number_generator
+            Zed_audio_ctrl
+            Vga_controller_ip
+      Last_hardware_update
   
 Scripts
-  jpgToHex.py
-  wavToBin.py
+      jpgToHex.py
+      wavToBin.py
 
-
+```
 NOTE: Import using Vitis' import functinality for a smooth run.
